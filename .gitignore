@@ -1,0 +1,17 @@
+# Terraform files
+.terraform
+terraform.tfstate
+terraform.tfvars
+*.tfstate*
+.terragrunt
+.terragrunt-cache
+
+.idea
+*.iml
+vendor
+
+# Folder used to store temporary test data by Terratest
+.test-data
+
+# Used in Lambda example
+example-app.zip
