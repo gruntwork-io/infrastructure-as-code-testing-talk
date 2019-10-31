@@ -54,16 +54,11 @@ func TestProxyAppUnit(t *testing.T) {
 	})
 }
 
-// An example of an integration test for the Terraform modules in examples/proxy-app and examples/static-website
-func TestProxyAppIntegration(t *testing.T) {
+// An example of an integration test for the Terraform modules in examples/proxy-app and examples/static-website. This
+// example breaks the test up into stages so you can skip any stage foo by setting the environment variable
+// SKIP_foo=true.
+func TestProxyAppIntegrationWithStages(t *testing.T) {
 	t.Parallel()
-
-	// Uncomment any of these settings below to skip that part of the test
-	//os.Setenv("SKIP_cleanup_static_website", "true")
-	//os.Setenv("SKIP_deploy_static_website", "true")
-	//os.Setenv("SKIP_cleanup_proxy_app", "true")
-	//os.Setenv("SKIP_deploy_proxy_app", "true")
-	//os.Setenv("SKIP_validate_proxy_app", "true")
 
 	defer test_structure.RunTestStage(t, "cleanup_static_website", func() {
 		cleanupStaticWebsite(t)
@@ -89,16 +84,7 @@ func TestProxyAppIntegration(t *testing.T) {
 // Deploy the static website
 func deployStaticWebsite(t *testing.T) {
 	uniqueId := random.UniqueId()
-
-	// Create an S3 bucket to store Terraform state
-	s3BucketName := strings.ToLower(fmt.Sprintf("test-proxy-app-state-%s", uniqueId))
-	s3BucketRegion := "us-east-1"
-	s3BucketKey := "static-website/terraform.tfstate"
-	aws.CreateS3Bucket(t, s3BucketRegion, s3BucketName)
-
-	// Clean up any previous terraform.tfstate that may be referencing an S3 bucket that was deleted in a previous
-	// test run and no longer exists
-	os.Remove(filepath.Join(staticWebsitePath, ".terraform", "terraform.tfstate"))
+	terraformBackend := configureBackendForStaticWebsite(t, uniqueId)
 
 	staticWebsiteOpts := &terraform.Options{
 		// The path to where our Terraform code is located
@@ -110,37 +96,39 @@ func deployStaticWebsite(t *testing.T) {
 		},
 
 		// Backend configuration that specifies where to store Terraform state for the module
-		BackendConfig: map[string]interface{}{
-			"bucket": s3BucketName,
-			"region": s3BucketRegion,
-			"key": s3BucketKey,
-		},
+		BackendConfig: terraformBackend,
 	}
 
+	// Save the Terraform options to disk so other test stages can read them
 	test_structure.SaveTerraformOptions(t, staticWebsitePath, staticWebsiteOpts)
 
+	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	terraform.InitAndApply(t, staticWebsiteOpts)
 }
 
 // Clean up the static website
 func cleanupStaticWebsite(t *testing.T) {
+	// Read the Terraform options saved by an earlier test stage
 	staticWebsiteOpts := test_structure.LoadTerraformOptions(t, staticWebsitePath)
-	s3BucketRegion := staticWebsiteOpts.BackendConfig["region"].(string)
-	s3BucketName := staticWebsiteOpts.BackendConfig["bucket"].(string)
 
+	// Run `terraform destroy` to clean up any resources that were created
 	terraform.Destroy(t, staticWebsiteOpts)
 
-	aws.EmptyS3Bucket(t, s3BucketRegion, s3BucketName)
-	aws.DeleteS3Bucket(t, s3BucketRegion, s3BucketName)
+	// Run `terraform destroy` to clean up any resources that were created
+	s3BucketRegion := readConfig(t, staticWebsiteOpts.BackendConfig, "region")
+	s3BucketName := readConfig(t, staticWebsiteOpts.BackendConfig, "bucket")
+	cleanupTerraformBackend(t, s3BucketRegion, s3BucketName)
 }
 
 // Deploy the proxy app
 func deployProxyApp(t *testing.T) {
+	// Read the Terraform options saved by an earlier test stage
 	staticWebsiteOpts := test_structure.LoadTerraformOptions(t, staticWebsitePath)
-	name := staticWebsiteOpts.Vars["name"].(string)
-	s3BucketRegion := staticWebsiteOpts.BackendConfig["region"].(string)
-	s3BucketName := staticWebsiteOpts.BackendConfig["bucket"].(string)
-	s3BucketKey := staticWebsiteOpts.BackendConfig["key"].(string)
+
+	name := readConfig(t, staticWebsiteOpts.Vars, "name")
+	s3BucketRegion := readConfig(t, staticWebsiteOpts.BackendConfig, "region")
+	s3BucketName := readConfig(t, staticWebsiteOpts.BackendConfig, "bucket")
+	s3BucketKey := readConfig(t, staticWebsiteOpts.BackendConfig, "key")
 
 	proxyAppOpts := &terraform.Options{
 		// The path to where our Terraform code is located
@@ -158,18 +146,25 @@ func deployProxyApp(t *testing.T) {
 		},
 	}
 
+	// Save the Terraform options to disk so other test stages can read them
 	test_structure.SaveTerraformOptions(t, proxyAppPath, proxyAppOpts)
+
+	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	terraform.InitAndApply(t, proxyAppOpts)
 }
 
 // Clean up the proxy app
 func cleanupProxyApp(t *testing.T) {
+	// Read the Terraform options saved by an earlier test stage
 	proxyAppOpts := test_structure.LoadTerraformOptions(t, proxyAppPath)
+
+	// Run `terraform destroy` to clean up any resources that were created
 	terraform.Destroy(t, proxyAppOpts)
 }
 
 // Validate the proxy app works
 func validateProxyApp(t *testing.T) {
+	// Read the Terraform options saved by an earlier test stage
 	proxyAppOpts := test_structure.LoadTerraformOptions(t, proxyAppPath)
 
 	// Run `terraform output` to get the values of output variables
@@ -182,4 +177,46 @@ func validateProxyApp(t *testing.T) {
 	maxRetries := 10
 	timeBetweenRetries := 3 * time.Second
 	http_helper.HttpGetWithRetry(t, url, nil, expectedStatus, expectedBody, maxRetries, timeBetweenRetries)
+}
+
+// Create an S3 bucket to use as a Terraform backend and return the backend details in the format expected by Terratest
+func configureBackendForStaticWebsite(t *testing.T, uniqueId string) map[string]interface{} {
+	s3BucketName := strings.ToLower(fmt.Sprintf("test-proxy-app-state-%s", uniqueId))
+	s3BucketRegion := "us-east-2"
+	s3BucketKey := "static-website/terraform.tfstate"
+
+	// Create an S3 bucket to store Terraform state
+	aws.CreateS3Bucket(t, s3BucketRegion, s3BucketName)
+
+	// Clean up any previous terraform.tfstate that may be referencing an S3 bucket that was deleted in a previous
+	// test run and no longer exists
+	os.Remove(filepath.Join(staticWebsitePath, ".terraform", "terraform.tfstate"))
+
+	return map[string]interface{}{
+		"bucket": s3BucketName,
+		"region": s3BucketRegion,
+		"key": s3BucketKey,
+	}
+}
+
+// Clean up the S3 bucket used as a Terraform backend
+func cleanupTerraformBackend(t *testing.T, s3BucketRegion string, s3BucketName string) {
+	aws.EmptyS3Bucket(t, s3BucketRegion, s3BucketName)
+	aws.DeleteS3Bucket(t, s3BucketRegion, s3BucketName)
+}
+
+// Read a config from a backend or vars map of terraform.Options and return its value as a string. If the key isn't
+// present or isn't a string, fail the test.
+func readConfig(t *testing.T, values map[string]interface{}, key string) string {
+	value, present := values[key]
+	if !present {
+		t.Fatalf("Required key %s not found", key)
+	}
+
+	valueAsString, isString := value.(string)
+	if !isString {
+		t.Fatalf("Key %s was not a string", key)
+	}
+
+	return valueAsString
 }
