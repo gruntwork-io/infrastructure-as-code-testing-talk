@@ -13,13 +13,13 @@ import (
 	"time"
 )
 
-const proxyAppPath = "../examples/proxy-app"
-const staticWebsitePath = "../examples/static-website"
-
 // Deploy the static website
-func configureStaticWebsiteOptions(t *testing.T) *terraform.Options {
+func configureStaticWebsiteOptions(t *testing.T, staticWebsitePath string) *terraform.Options {
+	// A unique ID we can use to namespace all our resource names and ensure they don't clash across parallel tests
 	uniqueId := random.UniqueId()
-	terraformBackend := configureBackendForStaticWebsite(t, uniqueId)
+
+	// Configure the S3 backend where the static website module will store its state
+	terraformBackend := configureBackendForStaticWebsite(t, uniqueId, staticWebsitePath)
 
 	return &terraform.Options{
 		// The path to where our Terraform code is located
@@ -47,7 +47,7 @@ func cleanupStaticWebsite(t *testing.T, staticWebsiteOpts *terraform.Options) {
 }
 
 // Deploy the proxy app
-func configureProxyAppOptions(t *testing.T, staticWebsiteOpts *terraform.Options) *terraform.Options {
+func configureProxyAppOptions(t *testing.T, staticWebsiteOpts *terraform.Options, proxyAppPath string) *terraform.Options {
 	name := readConfig(t, staticWebsiteOpts.Vars, "name")
 	s3BucketRegion := readConfig(t, staticWebsiteOpts.BackendConfig, "region")
 	s3BucketName := readConfig(t, staticWebsiteOpts.BackendConfig, "bucket")
@@ -91,7 +91,7 @@ func validateProxyApp(t *testing.T, proxyAppOpts *terraform.Options) {
 }
 
 // Create an S3 bucket to use as a Terraform backend and return the backend details in the format expected by Terratest
-func configureBackendForStaticWebsite(t *testing.T, uniqueId string) map[string]interface{} {
+func configureBackendForStaticWebsite(t *testing.T, uniqueId string, staticWebsitePath string) map[string]interface{} {
 	s3BucketName := strings.ToLower(fmt.Sprintf("test-proxy-app-state-%s", uniqueId))
 	s3BucketRegion := "us-east-2"
 	s3BucketKey := "static-website/terraform.tfstate"

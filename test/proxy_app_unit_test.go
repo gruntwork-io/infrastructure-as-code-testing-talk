@@ -4,6 +4,7 @@ import (
 	"fmt"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/random"
+	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
 	"strings"
 	"testing"
 	"time"
@@ -15,6 +16,11 @@ import (
 func TestProxyAppUnit(t *testing.T) {
 	t.Parallel()
 
+	// Since we want to be able to run multiple tests in parallel on the same modules, we need to copy them into
+	// temp folders so that the state files and .terraform folders don't clash
+	proxyAppPath := test_structure.CopyTerraformFolderToTemp(t, "../", "examples/proxy-app")
+
+	// A unique ID we can use to namespace all our resource names and ensure they don't clash across parallel tests
 	uniqueId := random.UniqueId()
 
 	terraformOptions := &terraform.Options{

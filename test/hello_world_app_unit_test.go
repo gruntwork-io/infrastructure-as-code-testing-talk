@@ -14,6 +14,7 @@ import (
 func TestHelloWorldAppUnit(t *testing.T) {
 	t.Parallel()
 
+	// A unique ID we can use to namespace all our resource names and ensure they don't clash across parallel tests
 	uniqueId := random.UniqueId()
 
 	terraformOptions := &terraform.Options{
