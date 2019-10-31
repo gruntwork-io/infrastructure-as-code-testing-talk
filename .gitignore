@@ -13,5 +13,5 @@ vendor
 # Folder used to store temporary test data by Terratest
 .test-data
 
-# Used in Lambda example
-example-app.zip
+# Created by the serverless-app module
+deployment-package.zip
