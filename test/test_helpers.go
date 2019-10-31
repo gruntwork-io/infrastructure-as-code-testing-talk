@@ -5,88 +5,23 @@ import (
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/random"
-	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 const proxyAppPath = "../examples/proxy-app"
 const staticWebsitePath = "../examples/static-website"
 
-// An example of a unit test for the Terraform module in examples/proxy-app
-func TestProxyAppUnit(t *testing.T) {
-	t.Parallel()
-
-	uniqueId := random.UniqueId()
-
-	terraformOptions := &terraform.Options{
-		// The path to where our Terraform code is located
-		TerraformDir: proxyAppPath,
-
-		// Variables to pass to our Terraform code using -var options
-		Vars: map[string]interface{}{
-			"name": fmt.Sprintf("proxy-app-%s", uniqueId),
-
-			// To make this a unit test, we proxy a known, "mock" endpoint
-			"url_to_proxy": "https://www.example.com",
-		},
-	}
-
-	// At the end of the test, run `terraform destroy` to clean up any resources that were created
-	defer terraform.Destroy(t, terraformOptions)
-
-	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
-	terraform.InitAndApply(t, terraformOptions)
-
-	// Run `terraform output` to get the values of output variables
-	url := terraform.Output(t, terraformOptions, "url")
-
-	// Verify the app returns a 200 OK with the text from example.com
-	maxRetries := 10
-	timeBetweenRetries := 3 * time.Second
-	http_helper.HttpGetWithRetryWithCustomValidation(t, url, nil, maxRetries, timeBetweenRetries, func(statusCode int, body string) bool {
-		return statusCode == 200 && strings.Contains(body, "<h1>Example Domain</h1>")
-	})
-}
-
-// An example of an integration test for the Terraform modules in examples/proxy-app and examples/static-website. This
-// example breaks the test up into stages so you can skip any stage foo by setting the environment variable
-// SKIP_foo=true.
-func TestProxyAppIntegrationWithStages(t *testing.T) {
-	t.Parallel()
-
-	defer test_structure.RunTestStage(t, "cleanup_static_website", func() {
-		cleanupStaticWebsite(t)
-	})
-
-	test_structure.RunTestStage(t, "deploy_static_website", func() {
-		deployStaticWebsite(t)
-	})
-
-	defer test_structure.RunTestStage(t, "cleanup_proxy_app", func() {
-		cleanupProxyApp(t)
-	})
-
-	test_structure.RunTestStage(t, "deploy_proxy_app", func() {
-		deployProxyApp(t)
-	})
-
-	test_structure.RunTestStage(t, "validate_proxy_app", func() {
-		validateProxyApp(t)
-	})
-}
-
 // Deploy the static website
-func deployStaticWebsite(t *testing.T) {
+func configureStaticWebsiteOptions(t *testing.T) *terraform.Options {
 	uniqueId := random.UniqueId()
 	terraformBackend := configureBackendForStaticWebsite(t, uniqueId)
 
-	staticWebsiteOpts := &terraform.Options{
+	return &terraform.Options{
 		// The path to where our Terraform code is located
 		TerraformDir: staticWebsitePath,
 
@@ -98,19 +33,10 @@ func deployStaticWebsite(t *testing.T) {
 		// Backend configuration that specifies where to store Terraform state for the module
 		BackendConfig: terraformBackend,
 	}
-
-	// Save the Terraform options to disk so other test stages can read them
-	test_structure.SaveTerraformOptions(t, staticWebsitePath, staticWebsiteOpts)
-
-	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
-	terraform.InitAndApply(t, staticWebsiteOpts)
 }
 
 // Clean up the static website
-func cleanupStaticWebsite(t *testing.T) {
-	// Read the Terraform options saved by an earlier test stage
-	staticWebsiteOpts := test_structure.LoadTerraformOptions(t, staticWebsitePath)
-
+func cleanupStaticWebsite(t *testing.T, staticWebsiteOpts *terraform.Options) {
 	// Run `terraform destroy` to clean up any resources that were created
 	terraform.Destroy(t, staticWebsiteOpts)
 
@@ -121,16 +47,13 @@ func cleanupStaticWebsite(t *testing.T) {
 }
 
 // Deploy the proxy app
-func deployProxyApp(t *testing.T) {
-	// Read the Terraform options saved by an earlier test stage
-	staticWebsiteOpts := test_structure.LoadTerraformOptions(t, staticWebsitePath)
-
+func configureProxyAppOptions(t *testing.T, staticWebsiteOpts *terraform.Options) *terraform.Options {
 	name := readConfig(t, staticWebsiteOpts.Vars, "name")
 	s3BucketRegion := readConfig(t, staticWebsiteOpts.BackendConfig, "region")
 	s3BucketName := readConfig(t, staticWebsiteOpts.BackendConfig, "bucket")
 	s3BucketKey := readConfig(t, staticWebsiteOpts.BackendConfig, "key")
 
-	proxyAppOpts := &terraform.Options{
+	return &terraform.Options{
 		// The path to where our Terraform code is located
 		TerraformDir: proxyAppPath,
 
@@ -145,28 +68,16 @@ func deployProxyApp(t *testing.T) {
 			"terraform_state_bucket_static_website_key": s3BucketKey,
 		},
 	}
-
-	// Save the Terraform options to disk so other test stages can read them
-	test_structure.SaveTerraformOptions(t, proxyAppPath, proxyAppOpts)
-
-	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
-	terraform.InitAndApply(t, proxyAppOpts)
 }
 
 // Clean up the proxy app
-func cleanupProxyApp(t *testing.T) {
-	// Read the Terraform options saved by an earlier test stage
-	proxyAppOpts := test_structure.LoadTerraformOptions(t, proxyAppPath)
-
+func cleanupProxyApp(t *testing.T, proxyAppOpts *terraform.Options) {
 	// Run `terraform destroy` to clean up any resources that were created
 	terraform.Destroy(t, proxyAppOpts)
 }
 
 // Validate the proxy app works
-func validateProxyApp(t *testing.T) {
-	// Read the Terraform options saved by an earlier test stage
-	proxyAppOpts := test_structure.LoadTerraformOptions(t, proxyAppPath)
-
+func validateProxyApp(t *testing.T, proxyAppOpts *terraform.Options) {
 	// Run `terraform output` to get the values of output variables
 	url := terraform.Output(t, proxyAppOpts, "url")
 

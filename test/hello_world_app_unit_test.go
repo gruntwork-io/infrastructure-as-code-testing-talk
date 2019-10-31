@@ -11,7 +11,7 @@ import (
 )
 
 // An example of how to test the Terraform module in examples/hello-world-app
-func TestHelloWorldApp(t *testing.T) {
+func TestHelloWorldAppUnit(t *testing.T) {
 	t.Parallel()
 
 	uniqueId := random.UniqueId()
