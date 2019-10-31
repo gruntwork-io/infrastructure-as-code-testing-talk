@@ -1,5 +1,5 @@
 data "terraform_remote_state" "static_website" {
-  count = var.url_to_proxy == null ? 1 : 0
+  count = var.terraform_state_bucket == null ? 0 : 1
 
   backend = "s3"
   config = {
@@ -12,5 +12,5 @@ data "terraform_remote_state" "static_website" {
 locals {
   # If var.url_to_proxy is specified, proxy the URL in it. Otherwise, fetch the static website remote state and read
   # the URL to proxy from that.
-  url_to_proxy = var.url_to_proxy == null ? data.terraform_remote_state.static_website[0].outputs.website_url : var.url_to_proxy
+  url_to_proxy = var.terraform_state_bucket == null ? var.url_to_proxy : data.terraform_remote_state.static_website[0].outputs.website_url
 }
