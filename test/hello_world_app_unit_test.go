@@ -10,7 +10,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-// An example of how to test the Terraform module in examples/hello-world-app
+// An example of a unit test for the Terraform module in examples/hello-world-app
 func TestHelloWorldAppUnit(t *testing.T) {
 	t.Parallel()
 
