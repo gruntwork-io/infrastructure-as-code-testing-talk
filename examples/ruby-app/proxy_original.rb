@@ -3,12 +3,14 @@ require 'net/http'
 
 # A web server that proxies a URL
 class WebServer < WEBrick::HTTPServlet::AbstractServlet
-  def do_GET(request, response)
-    handlers = Handlers.new
-    status_code, content_type, body = handlers.handle(request.path)
+  def initialize()
+    @handlers = Handlers.new
+  end
 
-    response.status = status_code
-    response['Content-Type'] = content_type
+  def do_GET(request, response)
+    status, type, body = @handlers.handle(request.path)
+    response.status = status
+    response['Content-Type'] = type
     response.body = body
   end
 end
