@@ -11,9 +11,9 @@ class TestWebServer < Test::Unit::TestCase
   end
 
   def test_unit_hello
-    status_code, content_type, body = @handlers.handle("/")
-    assert_equal(200, status_code)
-    assert_equal('text/plain', content_type)
+    status, type, body = @handlers.handle("/")
+    assert_equal(200, status)
+    assert_equal('text/plain', type)
     assert_equal('Hello, World', body)
   end
 end

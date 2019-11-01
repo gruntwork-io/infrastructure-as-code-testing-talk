@@ -12,9 +12,9 @@ class TestWebServer < Test::Unit::TestCase
   end
 
   def test_proxy
-    status_code, content_type, body = @handlers.handle("/")
-    assert_equal(200, status_code)
-    assert_equal('text/html', content_type)
+    status, type, body = @handlers.handle("/")
+    assert_equal(200, status)
+    assert_equal('text/html', type)
     assert_equal('mock example.org', body)
   end
 end
