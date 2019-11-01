@@ -1,8 +1,10 @@
 require 'webrick'
 
-# A basic web server that responds with "Hello, World!" to all requests
+# A basic web server that responds with "Hello, World!" to all requests. In this case, the core implementation lives in
+# a separate class that can be unit tested.
 class WebServer < WEBrick::HTTPServlet::AbstractServlet
-  def initialize()
+  def initialize(server, *options)
+    super(server, options)
     @handlers = Handlers.new
   end
 

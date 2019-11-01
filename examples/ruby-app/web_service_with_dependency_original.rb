@@ -1,11 +1,12 @@
 require 'webrick'
 require 'net/http'
 
-# A web server that proxies a URL
+# A web server that has a dependency on the outside world: in particular, it makes a call to example.com and proxies
+# the response.
 class WebServer < WEBrick::HTTPServlet::AbstractServlet
-  def initialize()
-    web_service = Proxy.new("http://www.example.org")
-    @handlers = Handlers.new(web_service)
+  def initialize(server, *options)
+    super(server, options)
+    @handlers = Handlers.new
   end
 
   def do_GET(request, response)
@@ -16,26 +17,12 @@ class WebServer < WEBrick::HTTPServlet::AbstractServlet
   end
 end
 
-# The core implementation of the web server. It takes in dependencies, such as the proxy class, as inputs, so those can
-# be replaced at test time with mocks ("dependency injection") to make unit testing easier.
+# The core implementation of the web server. It has a dependency on the outside world: in particular, it makes a call
+# to example.com and proxies the response.
 class Handlers
-  def initialize(proxy)
-    @proxy = proxy
-  end
-
   def handle(path)
-    @proxy.proxy
-  end
-end
-
-# This class proxies a given URL
-class Proxy
-  def initialize(url)
-    @uri = URI(url)
-  end
-
-  def proxy
-    response = Net::HTTP.get_response(@uri)
+    uri = URI("http://www.example.com")
+    response = Net::HTTP.get_response(uri)
     [response.code.to_i, response['Content-Type'], response.body]
   end
 end

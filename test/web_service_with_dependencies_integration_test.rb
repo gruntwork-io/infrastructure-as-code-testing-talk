@@ -1,17 +1,17 @@
-require_relative "../examples/ruby-app/proxy_unit_testable"
+require_relative "../examples/ruby-app/web_service_with_dependency_testable"
 require "test/unit"
 require 'webrick'
 require 'net/http'
 
-# An integration test for the web server in examples/ruby-app/proxy_unit_testable.rb
+# An integration test for the web server in examples/ruby-app/web_service_with_dependencies_testable.rb
 class TestWebServer < Test::Unit::TestCase
   def initialize(test_method_name)
     super(test_method_name)
-    proxy = Proxy.new("http://www.example.org")
-    @handlers = Handlers.new(proxy)
+    web_service = WebService.new("http://www.example.com")
+    @handlers = Handlers.new(web_service)
   end
 
-  def test_proxy
+  def test_integration_web_service
     do_integration_test('/', lambda { |response|
       assert_equal(200, response.code.to_i)
       assert_include(response['Content-Type'], 'text/html')
