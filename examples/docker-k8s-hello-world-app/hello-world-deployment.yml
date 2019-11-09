@@ -1,0 +1,34 @@
+# Deploy the hello-world-app to Kubernetes and expose it via a LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: hello-world-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello-world-app
+    spec:
+      containers:
+        - name: hello-world-app
+          image: gruntwork-io/hello-world-app:v1
+          ports:
+            - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: hello-world-app-service
+spec:
+  selector:
+    app: hello-world-app
+  ports:
+    - protocol: TCP
+      targetPort: 8080
+      port: 8080
+  type: LoadBalancer

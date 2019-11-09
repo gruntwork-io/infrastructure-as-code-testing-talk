@@ -19,7 +19,25 @@ up, it should be free, but you are completely responsible for all AWS charges.
 1. Install [Terraform](https://www.terraform.io/) and make sure it's on your `PATH`.
 1. Install [Golang](https://golang.org/), minimum version `1.13`.
 1. `cd test`
-1. To run all the tests: `go test -v -timeout 15m`
+1. To run a single test: `go test -v -timeout 15m -run <TEST_NAME>`
+
+## Running automated tests for the Docker and Kubernetes examples
+
+1. Install [Docker](https://www.docker.com/).
+1. Install [Golang](https://golang.org/), minimum version `1.13`.
+1. You'll need access to a [Kubernetes](https://kubernetes.io/) cluster to run these tests. **Recommended option**: 
+   If you're using the [Docker Desktop app](https://www.docker.com/products/docker-desktop), then you already have a local 
+   [Kubernetes cluster installed](https://www.docker.com/blog/kubernetes-is-now-available-in-docker-desktop-stable-channel/)!
+   Alternatively, you can run Kubernetes locally using 
+   [MiniKube](https://kubernetes.io/docs/setup/learning-environment/minikube/) or run these tests against a Kubernetes
+   cluster in the cloud, such as [Amazon EKS](https://aws.amazon.com/eks/), 
+   [Google Container Engine](https://cloud.google.com/kubernetes-engine/), or 
+   [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/). 
+1. Whichever option you choose to run your Kubernetes cluster, you'll need to 
+   [authentiate to it](https://kubernetes.io/docs/reference/access-authn-authz/authentication/). If you're running 
+   Kubernetes locally (e.g., via Docker for Desktop), you're probably already authenticated to it, so there's nothing
+   to do.
+1. `cd test`
 1. To run a single test: `go test -v -timeout 15m -run <TEST_NAME>`
 
 ## Running automated tests for the Ruby examples
@@ -27,3 +45,4 @@ up, it should be free, but you are completely responsible for all AWS charges.
 1. Install [Ruby](https://www.ruby-lang.org/en/).
 1. `cd test`
 1. `ruby <FILE_NAME>`
+
