@@ -5,12 +5,6 @@ require 'net/http'
 
 # An integration test for the web server in examples/ruby-app/web_service_with_dependencies_testable.rb
 class TestWebServer < Test::Unit::TestCase
-  def initialize(test_method_name)
-    super(test_method_name)
-    web_service = WebService.new("http://www.example.com")
-    @handlers = Handlers.new(web_service)
-  end
-
   def test_integration_web_service
     do_integration_test('/', lambda { |response|
       assert_equal(200, response.code.to_i)
