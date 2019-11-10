@@ -53,4 +53,4 @@ For production-ready versions of this code and many other types of infrastructur
    Kubernetes locally (e.g., via Docker for Desktop), you're probably already authenticated to it, so there's nothing
    to do.
 1. `cd test`
-1. To run a single test: `go test -v -timeout 15m -run '^TestDockerK8SHelloWorldAppUnit$'`
+1. Run the automated test for this example: `go test -v -timeout 15m -run '^TestDockerKubernetesUnit$'`

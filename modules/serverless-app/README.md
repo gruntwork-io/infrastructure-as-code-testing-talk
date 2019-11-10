@@ -20,13 +20,8 @@ For production-ready versions of this code and many other types of infrastructur
 
 ## Usage
 
-Check out [examples/hello-world-app](/examples/hello-world-app) and [examples/proxy-app](/examples/proxy-app) for 
-example usage.
+Check out the [examples](/examples) folder for working sample code that uses this module.
 
 ## Tests
 
-Check out [test/hello_world_app_unit_test.go](/test/hello_world_app_unit_test.go), 
-[test/proxy_app_unit_test.go](/test/proxy_app_unit_test.go), 
-[test/proxy_app_integration_test.go](/test/proxy_app_integration_test.go), and
-[test/proxy_app_integration_with_stages_test.go](/test/proxy_app_integration_with_stages_test.go) for examples of 
-automated tests for this module.
+Check out the [test](/test) folder for examples of automated tests for this module.
