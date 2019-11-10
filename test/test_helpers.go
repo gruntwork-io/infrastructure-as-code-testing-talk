@@ -32,6 +32,14 @@ func configureStaticWebsiteOptions(t *testing.T, staticWebsitePath string) *terr
 
 		// Backend configuration that specifies where to store Terraform state for the module
 		BackendConfig: terraformBackend,
+
+		RetryableTerraformErrors: map[string]string{
+			"net/http: TLS handshake timeout": "https://github.com/hashicorp/terraform/issues/22456",
+		},
+
+		MaxRetries: 3,
+
+		TimeBetweenRetries: 3 * time.Second,
 	}
 }
 

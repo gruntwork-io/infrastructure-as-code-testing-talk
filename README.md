@@ -13,8 +13,8 @@ For production-ready versions of this code and many other types of infrastructur
 This repo contains:
 
 * [modules](/modules): several simple Terraform modules used to demonstrate automated testing practices. 
-* [examples](/examples): examples of (a) how to use the Terraform moduules in `/modules`, (b) how to deploy Dockerized
-  apps to Kubernetes, (c) some simple Ruby web apps. 
+* [examples](/examples): examples of (a) how to use the Terraform moduules in `/modules` and (b) how to deploy 
+  Dockerized apps to Kubernetes. 
 * [test](/test): automated tests for each of the examples in the `/examples` folder.
 
 Dive into each of the folders above for more information!

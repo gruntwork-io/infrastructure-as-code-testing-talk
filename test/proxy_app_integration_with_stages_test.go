@@ -26,7 +26,7 @@ func TestProxyAppIntegrationWithStages(t *testing.T) {
 	// Deploy the static-website module
 	test_structure.RunTestStage(t, "deploy_static_website", func() {
 		staticWebsiteOpts := configureStaticWebsiteOptions(t, staticWebsitePath)
-		test_structure.SaveTerraformOptions(t, staticWebsitePath, staticWebsiteOpts)
+			test_structure.SaveTerraformOptions(t, staticWebsitePath, staticWebsiteOpts)
 		terraform.InitAndApply(t, staticWebsiteOpts)
 	})
 

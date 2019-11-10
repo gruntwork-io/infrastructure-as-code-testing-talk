@@ -39,10 +39,3 @@ up, it should be free, but you are completely responsible for all AWS charges.
    to do.
 1. `cd test`
 1. To run a single test: `go test -v -timeout 15m -run <TEST_NAME>`
-
-## Running automated tests for the Ruby examples
-
-1. Install [Ruby](https://www.ruby-lang.org/en/).
-1. `cd test`
-1. `ruby <FILE_NAME>`
-
