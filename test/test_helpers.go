@@ -56,7 +56,7 @@ func cleanupWebService(t *testing.T, webServiceOpts *terraform.Options) {
 
 // Deploy the proxy app
 func configProxyApp(t *testing.T, webServiceOpts *terraform.Options, proxyAppPath string) *terraform.Options {
-	name := readConfig(t, webServiceOpts.Vars, "name")
+	name := fmt.Sprintf("%s-proxy-app", readConfig(t, webServiceOpts.Vars, "name"))
 	s3BucketRegion := readConfig(t, webServiceOpts.BackendConfig, "region")
 	s3BucketName := readConfig(t, webServiceOpts.BackendConfig, "bucket")
 	s3BucketKey := readConfig(t, webServiceOpts.BackendConfig, "key")
