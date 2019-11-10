@@ -10,7 +10,7 @@ variable "aws_region" {
 }
 
 variable "name" {
-  description = "The name of the Lambda function, S3 bucket, and all other resources created by this module."
+  description = "The name of the Lambda function and all other resources created by this module."
   type        = string
   default     = "proxy-app-example"
 }
@@ -27,8 +27,8 @@ variable "terraform_state_bucket_region" {
   default     = null
 }
 
-variable "terraform_state_bucket_static_website_key" {
-  description = "The path in the S3 bucket where the Terraform state for the static-website module lives. Either the terraform_state_bucket_xxx variables or the url_to_proxy variable should be set to tell the app which URL to proxy."
+variable "terraform_state_bucket_web_service_key" {
+  description = "The path in the S3 bucket where the Terraform state for the web-service module lives. Either the terraform_state_bucket_xxx variables or the url_to_proxy variable should be set to tell the app which URL to proxy."
   type        = string
   default     = null
 }

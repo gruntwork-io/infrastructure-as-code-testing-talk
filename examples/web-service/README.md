@@ -1,13 +1,13 @@
-# Static Website Example
+# Web Service Example
 
-This folder contains example code that shows how to use the [s3-website module](/modules/s3-website) to deploy
-a static website on top of [[Amazon S3](https://aws.amazon.com/s3/). The website includes "Hello, World" `index.html` 
-and `error.html` pages.
+This folder contains example code that shows how to use the [serverless-app module](/modules/serverless-app) to deploy
+a "Hello, World" Node.js web service on top of [AWS Lambda](https://aws.amazon.com/lambda/) and 
+[API Gateway](https://aws.amazon.com/api-gateway/). 
 
 This code is used in the talk 
 [How to test your infrastructure code: automated testing for Terraform, Docker, Packer, Kubernetes, and more](https://qconsf.com/sf2019/presentation/infrastructure-0) 
 by [Yevgeniy Brikman](https://www.ybrikman.com/) as a representation of typical infrastructure code that deploys an 
-external dependency, such as a data store, that you may wish to mock when writing automated tests. 
+external dependency, such as a backend web service, that you may wish to mock when writing automated tests. 
 
 **Note**: This repo is for demonstration and learning purposes only and should NOT be used to run anything important. 
 For production-ready versions of this code and many other types of infrastructure, check out 
@@ -30,11 +30,11 @@ it should be free, but you are completely responsible for all AWS charges.
     ```hcl
     bucket = "YOUR BUCKET'S NAME"
     region = "YOUR BUCKET'S REGION"
-    key    = "static-website/terraform.tfstate"
+    key    = "web-service/terraform.tfstate"
     ``` 
 1. Run `terraform init -backend-config=backend.hcl`.
 1. Run `terraform apply`.
-1. This module will output the URL of the S3 website at the end of `apply`. Try this URL out in your browser or
+1. This module will output the URL of the web service at the end of `apply`. Try this URL out in your browser or
    via `curl` to see if it's working!
 1. When you're done, run `terraform destroy`.
 
@@ -47,6 +47,6 @@ it should be free, but you are completely responsible for all AWS charges.
 1. Install [Terraform](https://www.terraform.io/) and make sure it's on your `PATH`.
 1. Install [Golang](https://golang.org/), minimum version `1.13`.
 1. `cd test`
-1. To run the unit test for this example: `go test -v -timeout 15m -run '^TestStaticWebsiteUnit$'`
+1. To run the unit test for this example: `go test -v -timeout 15m -run '^TestWebServiceUnit$'`
 1. To run the integration test for this example: `go test -v -timeout 15m -run '^TestProxyAppIntegration$'`
 1. To run the integration test with test stages for this example: `go test -v -timeout 15m -run '^TestProxyAppIntegrationWithStages$'`

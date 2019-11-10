@@ -6,25 +6,25 @@ import (
 	"testing"
 )
 
-// An example of an integration test for the Terraform modules in examples/proxy-app and examples/static-website.
+// An example of an integration test for the Terraform modules in examples/proxy-app and examples/web-service.
 func TestProxyAppIntegration(t *testing.T) {
 	t.Parallel()
 
 	// Since we want to be able to run multiple tests in parallel on the same modules, we need to copy them into
 	// temp folders so that the state files and .terraform folders don't clash
-	staticWebsitePath := test_structure.CopyTerraformFolderToTemp(t, "../", "examples/static-website")
+	webServicePath := test_structure.CopyTerraformFolderToTemp(t, "../", "examples/web-service")
 	proxyAppPath := test_structure.CopyTerraformFolderToTemp(t, "../", "examples/proxy-app")
 
-	// Deploy the static-website module
-	staticWebsiteOpts := configureStaticWebsiteOptions(t, staticWebsitePath)
-	defer cleanupStaticWebsite(t, staticWebsiteOpts)
-	terraform.InitAndApply(t, staticWebsiteOpts)
+	// Deploy the web-service module
+	webServiceOpts := configWebService(t, webServicePath)
+	defer cleanupWebService(t, webServiceOpts)
+	terraform.InitAndApply(t, webServiceOpts)
 
 	// Deploy the proxy-app module
-	proxyAppOpts := configureProxyAppOptions(t, staticWebsiteOpts, proxyAppPath)
+	proxyAppOpts := configProxyApp(t, webServiceOpts, proxyAppPath)
 	defer cleanupProxyApp(t, proxyAppOpts)
 	terraform.InitAndApply(t, proxyAppOpts)
 
-	// Validate the proxy-app module proxies the static-website correctly
+	// Validate the proxy-app module proxies the web-service correctly
 	validateProxyApp(t, proxyAppOpts)
 }

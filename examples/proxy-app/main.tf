@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# CREATE A SERVERLESS APP THAT PROXIES THE S3 STATIC WEBSITE
+# CREATE A SERVERLESS APP THAT PROXIES THE WEB-SERVICE MODULE
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "proxy_app" {
