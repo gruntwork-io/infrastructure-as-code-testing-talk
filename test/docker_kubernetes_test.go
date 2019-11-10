@@ -58,7 +58,7 @@ func validateK8SApp(t *testing.T, options *k8s.KubectlOptions) {
 	k8s.WaitUntilServiceAvailable(t, options, "hello-world-app-service", 10, 1*time.Second)
 
 	// Now we verify that the service will successfully boot and start serving requests
-	url := getServiceUrl(t, options)
+	url := serviceUrl(t, options)
 	expectedStatus := 200
 	expectedBody := "Hello, World!"
 	maxRetries := 10
@@ -67,7 +67,7 @@ func validateK8SApp(t *testing.T, options *k8s.KubectlOptions) {
 }
 
 // Get the service URL from Kubernetes
-func getServiceUrl(t *testing.T, options *k8s.KubectlOptions) string {
+func serviceUrl(t *testing.T, options *k8s.KubectlOptions) string {
 	service := k8s.GetService(t, options, "hello-world-app-service")
 	endpoint := k8s.GetServiceEndpoint(t, options, service, 8080)
 	return fmt.Sprintf("http://%s", endpoint)
