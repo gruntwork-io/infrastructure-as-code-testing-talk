@@ -28,13 +28,13 @@ For production-ready versions of this code and many other types of infrastructur
    to do.
 1. Install [Docker](https://www.docker.com/).
 1. Build the Docker image: `docker build -t gruntwork-io/hello-world-app:v1 .` 
-1. Deploy the Docker image to Kubernetes: `kubectl apply -f hello-world-deployment.yml`
+1. Deploy the Docker image to Kubernetes: `kubectl apply -f deployment.yml`
 1. See if the pods got created: `kubectl get pods`. Look for `hello-world-app-deployment`.
 1. See if the service is exposed: `kubectl get services`. Look for `hello-world-app-service`.
 1. From the previous step, look at the `EXTERNAL-IP` and `PORT(S)` for `hello-world-app-service` to get the IP and 
    port you can use to test the service. If you're running with a local Kubernetes cluster (e.g., via Docker for 
    Desktop), this will most likely be `localhost` and `8080`, so you can test with: `curl localhost:8080`.
-1. When you're done testing, clean up all deployed resourcces: `kubectl delete -f hello-world-deployment.yml`     
+1. When you're done testing, clean up all deployed resourcces: `kubectl delete -f deployment.yml`     
 
 ## Running automated tests against this example
 

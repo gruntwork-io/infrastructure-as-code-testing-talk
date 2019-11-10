@@ -4,10 +4,9 @@ import (
 	"fmt"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/random"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"testing"
 	"time"
-
-	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 // An example of a unit test for the Terraform module in examples/hello-world-app
@@ -33,6 +32,12 @@ func TestHelloWorldAppUnit(t *testing.T) {
 	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	terraform.InitAndApply(t, terraformOptions)
 
+	// Check that the app is working as expected
+	validateHelloWorldApp(t, terraformOptions)
+}
+
+// Validate the "Hello, World" app is working
+func validateHelloWorldApp(t *testing.T, terraformOptions *terraform.Options) {
 	// Run `terraform output` to get the values of output variables
 	url := terraform.Output(t, terraformOptions, "url")
 
