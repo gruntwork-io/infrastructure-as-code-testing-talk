@@ -17,12 +17,12 @@ func TestProxyAppIntegration(t *testing.T) {
 
 	// Deploy the web-service module
 	webServiceOpts := configWebService(t, webServicePath)
-	defer cleanupWebService(t, webServiceOpts)
+	defer terraform.Destroy(t, webServiceOpts)
 	terraform.InitAndApply(t, webServiceOpts)
 
 	// Deploy the proxy-app module
 	proxyAppOpts := configProxyApp(t, webServiceOpts, proxyAppPath)
-	defer cleanupProxyApp(t, proxyAppOpts)
+	defer terraform.Destroy(t, proxyAppOpts)
 	terraform.InitAndApply(t, proxyAppOpts)
 
 	// Validate the proxy-app module proxies the web-service correctly

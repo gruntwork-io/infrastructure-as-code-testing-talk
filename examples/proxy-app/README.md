@@ -2,10 +2,8 @@
 
 This folder contains example code that shows how to use the [serverless-app module](/modules/serverless-app) to deploy
 a proxy Node.js app on top of [AWS Lambda](https://aws.amazon.com/lambda/) and 
-[API Gateway](https://aws.amazon.com/api-gateway/). By default, this app will proxy the URL specified via the 
-`url_to_proxy` variable. However, if you deploy the [web-service example](/examples/web-service), and specify the
-location where that example stores its Terraform state using the `terraform_state_bucket_xxx` variables, the app will
-proxy the web-service module instead.
+[API Gateway](https://aws.amazon.com/api-gateway/). This app will proxy the URL specified via the `url_to_proxy` 
+variable.
 
 This code is used in the talk 
 [How to test your infrastructure code: automated testing for Terraform, Docker, Packer, Kubernetes, and more](https://qconsf.com/sf2019/presentation/infrastructure-0) 
@@ -42,6 +40,5 @@ it should be free, but you are completely responsible for all AWS charges.
 1. Install [Terraform](https://www.terraform.io/) and make sure it's on your `PATH`.
 1. Install [Golang](https://golang.org/), minimum version `1.13`.
 1. `cd test`
-1. To run the unit test for this example: `go test -v -timeout 15m -run '^TestProxyAppUnit$'`
 1. To run the integration test for this example: `go test -v -timeout 15m -run '^TestProxyAppIntegration$'`
 1. To run the integration test with test stages for this example: `go test -v -timeout 15m -run '^TestProxyAppIntegrationWithStages$'`

@@ -15,26 +15,8 @@ variable "name" {
   default     = "proxy-app-example"
 }
 
-variable "terraform_state_bucket" {
-  description = "The name of the S3 bucket that stores your Terraform state. Either the terraform_state_bucket_xxx variables or the url_to_proxy variable should be set to tell the app which URL to proxy."
-  type        = string
-  default     = null
-}
-
-variable "terraform_state_bucket_region" {
-  description = "The region where the S3 bucket that stores your Terraform state lives. Either the terraform_state_bucket_xxx variables or the url_to_proxy variable should be set to tell the app which URL to proxy."
-  type        = string
-  default     = null
-}
-
-variable "terraform_state_bucket_web_service_key" {
-  description = "The path in the S3 bucket where the Terraform state for the web-service module lives. Either the terraform_state_bucket_xxx variables or the url_to_proxy variable should be set to tell the app which URL to proxy."
-  type        = string
-  default     = null
-}
-
 variable "url_to_proxy" {
-  description = "The URL to proxy. Either this variable or the terraform_state_bucket_xxx variables should be set to tell the app which URL to proxy."
+  description = "The URL to proxy."
   type        = string
   default     = "https://www.example.com"
 }

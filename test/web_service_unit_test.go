@@ -23,9 +23,6 @@ func TestWebServiceUnit(t *testing.T) {
 	// temp folders so that the state files and .terraform folders don't clash
 	webServicePath := test_structure.CopyTerraformFolderToTemp(t, "../", "examples/web-service")
 
-	// Configure the S3 backend where the web-service module will store its state
-	terraformBackend := configureBackendForWebService(t, uniqueId, webServicePath)
-
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
 		TerraformDir: webServicePath,
@@ -34,13 +31,10 @@ func TestWebServiceUnit(t *testing.T) {
 		Vars: map[string]interface{}{
 			"name": strings.ToLower(fmt.Sprintf("web-service-test-%s", uniqueId)),
 		},
-
-		// Backend configuration that specifies where to store Terraform state for the module
-		BackendConfig: terraformBackend,
 	}
 
 	// At the end of the test, clean up any resources that were created
-	defer cleanupWebService(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	terraform.InitAndApply(t, terraformOptions)

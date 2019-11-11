@@ -20,7 +20,7 @@ func TestProxyAppIntegrationWithStages(t *testing.T) {
 	// Undeploy the web-service module at the end of the test
 	defer test_structure.RunTestStage(t, "cleanup_web_service", func() {
 		webServiceOpts := test_structure.LoadTerraformOptions(t, webServicePath)
-		cleanupWebService(t, webServiceOpts)
+		terraform.Destroy(t, webServiceOpts)
 	})
 
 	// Deploy the web-service module
@@ -33,7 +33,7 @@ func TestProxyAppIntegrationWithStages(t *testing.T) {
 	// Undeploy the proxy-app module at the end of the test
 	defer test_structure.RunTestStage(t, "cleanup_proxy_app", func() {
 		proxyAppOpts := test_structure.LoadTerraformOptions(t, proxyAppPath)
-		cleanupProxyApp(t, proxyAppOpts)
+		terraform.Destroy(t, proxyAppOpts)
 	})
 
 	// Deploy the proxy-app module

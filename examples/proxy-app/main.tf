@@ -17,6 +17,6 @@ module "proxy_app" {
 
   environment_variables = {
     NODE_ENV     = "production"
-    URL_TO_PROXY = local.url_to_proxy
+    URL_TO_PROXY = var.url_to_proxy
   }
 }
