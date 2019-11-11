@@ -50,4 +50,3 @@ func TestProxyAppIntegrationWithStages(t *testing.T) {
 		validateProxyApp(t, proxyAppOpts)
 	})
 }
-
