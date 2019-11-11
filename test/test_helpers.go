@@ -28,7 +28,7 @@ func configWebService(t *testing.T, webServicePath string) *terraform.Options {
 		RetryableTerraformErrors: map[string]string{
 			"net/http: TLS handshake timeout": "https://github.com/hashicorp/terraform/issues/22456",
 		},
-		MaxRetries: 3,
+		MaxRetries:         3,
 		TimeBetweenRetries: 3 * time.Second,
 	}
 }
@@ -36,6 +36,7 @@ func configWebService(t *testing.T, webServicePath string) *terraform.Options {
 // Deploy the proxy app
 func configProxyApp(t *testing.T, webServiceOpts *terraform.Options, proxyAppPath string) *terraform.Options {
 	name := fmt.Sprintf("%s-proxy-app", readConfig(t, webServiceOpts.Vars, "name"))
+	url := terraform.Output(t, webServiceOpts, "url")
 
 	return &terraform.Options{
 		// The path to where our Terraform code is located
@@ -43,7 +44,8 @@ func configProxyApp(t *testing.T, webServiceOpts *terraform.Options, proxyAppPat
 
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
-			"name": name,
+			"name":         name,
+			"url_to_proxy": url,
 		},
 	}
 }
