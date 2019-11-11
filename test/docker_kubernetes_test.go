@@ -30,9 +30,11 @@ func TestDockerKubernetesUnit(t *testing.T) {
 	// - Current context of the kubectl config file
 	options := k8s.NewKubectlOptions("", "", namespaceName)
 
-	k8s.CreateNamespace(t, options, namespaceName)
-	// ... and make sure to delete the namespace at the end of the test
+	// At the end of the test, make sure to delete the namespace
 	defer k8s.DeleteNamespace(t, options, namespaceName)
+
+	// Create the namespace
+	k8s.CreateNamespace(t, options, namespaceName)
 
 	// At the end of the test, run `kubectl delete -f RESOURCE_CONFIG` to clean up any resources that were created.
 	defer k8s.KubectlDelete(t, options, kubeResourcePath)
