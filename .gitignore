@@ -15,3 +15,15 @@ vendor
 
 # Created by the serverless-app module
 deployment-package.zip
+
+# Compiled javascript
+*.js
+*.d.ts
+
+# Node
+node_modules/
+
+# CDK Context & Staging files
+cdk.context.json
+.cdk.staging/
+cdk.out/
