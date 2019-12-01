@@ -12,7 +12,7 @@ For production-ready versions of this code and many other types of infrastructur
 
 This repo contains:
 
-* [modules](/modules): a simple Terraform module used throughout the talk to demonstrate automated testing practices, and an [AWS CDK](https://github.com/aws/aws-cdk/) app used to demonstrate techniques for testing infrastructure created with the CDK.
+* [modules](/modules): a simple Terraform module and [AWS CDK](https://github.com/aws/aws-cdk/) app used throughout the talk to demonstrate automated testing practices.
 * [examples](/examples): examples of (a) how to use the Terraform module in `/modules` and (b) how to deploy
   Dockerized apps to Kubernetes.
 * [test](/test): automated tests for each of the examples in the `/examples` folder.
