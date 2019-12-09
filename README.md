@@ -1,7 +1,7 @@
 # Infrastructure as code testing talk
 
 This repo contains sample code for the talk [How to test your infrastructure code: automated testing for Terraform,
-Docker, Packer, Kubernetes, and more](https://qconsf.com/sf2019/presentation/infrastructure-0) by
+Docker, Packer, Kubernetes, and more](https://www.infoq.com/presentations/automated-testing-terraform-docker-packer/) by
 [Yevgeniy Brikman](https://www.ybrikman.com/), with updates for AWS CDK by Ben Whaley.
 
 **Note**: This repo is for demonstration and learning purposes only and should NOT be used to run anything important.

@@ -6,7 +6,7 @@ a proxy Node.js app on top of [AWS Lambda](https://aws.amazon.com/lambda/) and
 variable.
 
 This code is used in the talk 
-[How to test your infrastructure code: automated testing for Terraform, Docker, Packer, Kubernetes, and more](https://qconsf.com/sf2019/presentation/infrastructure-0) 
+[How to test your infrastructure code: automated testing for Terraform, Docker, Packer, Kubernetes, and more](https://www.infoq.com/presentations/automated-testing-terraform-docker-packer/) 
 by [Yevgeniy Brikman](https://www.ybrikman.com/) as a representation of typical infrastructure code that deploys a web
 service that has external dependencies for which you may wish to write automated tests. 
 

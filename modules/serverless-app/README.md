@@ -3,7 +3,7 @@
 This folder contains a Terraform module that can be used to deploy a serverless web application on top of 
 [AWS Lambda](https://aws.amazon.com/lambda/) and [API Gateway](https://aws.amazon.com/api-gateway/). It's used in the
 talk [How to test your infrastructure code: automated testing for Terraform, 
-Docker, Packer, Kubernetes, and more](https://qconsf.com/sf2019/presentation/infrastructure-0) by 
+Docker, Packer, Kubernetes, and more](https://www.infoq.com/presentations/automated-testing-terraform-docker-packer/) by 
 [Yevgeniy Brikman](https://www.ybrikman.com/) as a representation of typical infrastructure code that deploys a web
 service for which you may wish to write automated tests. 
 

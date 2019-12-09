@@ -5,7 +5,7 @@ a "Hello, World" Node.js app on top of [AWS Lambda](https://aws.amazon.com/lambd
 [API Gateway](https://aws.amazon.com/api-gateway/). 
 
 This code is used in the talk 
-[How to test your infrastructure code: automated testing for Terraform, Docker, Packer, Kubernetes, and more](https://qconsf.com/sf2019/presentation/infrastructure-0) 
+[How to test your infrastructure code: automated testing for Terraform, Docker, Packer, Kubernetes, and more](https://www.infoq.com/presentations/automated-testing-terraform-docker-packer/) 
 by [Yevgeniy Brikman](https://www.ybrikman.com/) as a representation of typical infrastructure code that deploys a web
 service for which you may wish to write automated tests. 
 
