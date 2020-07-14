@@ -122,8 +122,8 @@ resource "aws_api_gateway_deployment" "deployment" {
   stage_name  = "live"
 
   depends_on = [
-    "aws_api_gateway_integration.root",
-    "aws_api_gateway_integration.proxy"
+    aws_api_gateway_integration.root,
+    aws_api_gateway_integration.proxy
   ]
 
   # forces to 'create' a new deployment each run. Otherwise the deployment doesn't get created after the initial run
@@ -143,7 +143,7 @@ resource "aws_lambda_permission" "allow_api_gateway" {
   source_arn = "${aws_api_gateway_rest_api.proxy.execution_arn}/*/*/*"
 
   depends_on = [
-    "aws_api_gateway_rest_api.proxy",
-    "aws_api_gateway_resource.proxy"
+    aws_api_gateway_rest_api.proxy,
+    aws_api_gateway_resource.proxy
   ]
 }
