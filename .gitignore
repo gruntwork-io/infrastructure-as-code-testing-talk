@@ -17,7 +17,6 @@ vendor
 deployment-package.zip
 
 # Compiled javascript
-*.js
 *.d.ts
 
 # Node
