@@ -7,6 +7,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"testing"
 	"time"
+	"strings"
 )
 
 // An example of a unit test for the Terraform module in examples/hello-world-app
@@ -40,6 +41,7 @@ func TestHelloWorldAppUnit(t *testing.T) {
 func validateHelloWorldApp(t *testing.T, terraformOptions *terraform.Options) {
 	// Run `terraform output` to get the values of output variables
 	url := terraform.Output(t, terraformOptions, "url")
+	url = strings.Replace(url, "\"","",-1) 
 
 	// Verify the app returns a 200 OK with the text "Hello, World!"
 	expectedStatus := 200
