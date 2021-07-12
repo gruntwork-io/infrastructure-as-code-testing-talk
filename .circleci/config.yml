@@ -7,6 +7,8 @@ env: &env
     PACKER_VERSION: 1.6.1
     GOLANG_VERSION: 1.16
     GO111MODULE: auto
+    K8S_VERSION: v1.20.0
+    KUBECONFIG: /home/circleci/.kube/config
 defaults: &defaults
   machine:
     enabled: true
@@ -19,6 +21,7 @@ install_gruntwork_utils: &install_gruntwork_utils
     curl -Ls https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "${GRUNTWORK_INSTALLER_VERSION}"
     gruntwork-install --module-name "gruntwork-module-circleci-helpers" --repo "https://github.com/gruntwork-io/terraform-aws-ci" --tag "${MODULE_CI_VERSION}"
     gruntwork-install --module-name "git-helpers" --repo "https://github.com/gruntwork-io/terraform-aws-ci" --tag "${MODULE_CI_VERSION}"
+    gruntwork-install --module-name "kubernetes-circleci-helpers" --repo "https://github.com/gruntwork-io/terraform-aws-ci" --tag "${MODULE_CI_VERSION}"
     gruntwork-install --binary-name "terratest_log_parser" --repo "https://github.com/gruntwork-io/terratest" --tag "${TERRATEST_LOG_PARSER_VERSION}"
     configure-environment-for-gruntwork-module \
       --terraform-version ${TERRAFORM_VERSION} \
@@ -48,6 +51,8 @@ jobs:
       # Install gruntwork utilities
       - run:
           <<: *install_gruntwork_utils
+      - run:
+          command: setup-minikube
       - run:
           name: run tests
           command: |
