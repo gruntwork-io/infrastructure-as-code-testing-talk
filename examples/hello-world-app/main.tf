@@ -17,7 +17,7 @@ module "hello_world_app" {
   name = var.name
 
   source_dir = "${path.module}/javascript"
-  runtime    = "nodejs10.x"
+  runtime    = "nodejs14.x"
   handler    = "index.handler"
 
   environment_variables = {
