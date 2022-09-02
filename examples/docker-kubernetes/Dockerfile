@@ -1,5 +1,5 @@
 # This Dockerfile builds a webapp that listens on port 8080 and responds with "Hello, World"
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 EXPOSE 8080
 
