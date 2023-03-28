@@ -75,7 +75,8 @@ workflows:
             tags:
               only: /^v.*/
           context:
-            - Gruntwork Admin
+            - AWS__PHXDEVOPS__circle-ci-test
+            - GITHUB__PAT__gruntwork-ci
       - test:
           requires:
             - build
@@ -83,4 +84,5 @@ workflows:
             tags:
               only: /^v.*/
           context:
-            - Gruntwork Admin
+            - AWS__PHXDEVOPS__circle-ci-test
+            - GITHUB__PAT__gruntwork-ci
